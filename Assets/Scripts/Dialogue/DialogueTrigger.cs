@@ -43,8 +43,8 @@ public class DialogueTrigger : MonoBehaviour
     public void TriggerDialogue()
     {
         dialogueBox.SetActive(true);
-
-        DialogueManager.Instance.StartDialogue(dialogues[0], gameObject.tag);
+        int index = GameManager.Instance.GetDialogueIndex(gameObject.tag);
+        DialogueManager.Instance.StartDialogue(dialogues[index], gameObject.tag);
     }
  
     void OnTriggerEnter(Collider other)
@@ -52,7 +52,11 @@ public class DialogueTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            dialoguePrompt.gameObject.SetActive(true);
+            var questName = gameObject.tag.Replace("Ghost", "");
+            if (GameManager.Instance.GetQuestState(questName) != QuestState.Ended)
+            { 
+                dialoguePrompt.gameObject.SetActive(true); 
+            }
         }
     }
 

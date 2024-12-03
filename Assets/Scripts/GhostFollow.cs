@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,7 +9,7 @@ public class GhostFollow : MonoBehaviour
 {
     public Transform player;
 
-    public float detectionDistance = 25;
+
     public float minDistance = 4;
     private float lastUpdateTime = 0;
     private bool isFrozen = true;
@@ -20,7 +21,8 @@ public class GhostFollow : MonoBehaviour
     void Update() {
         if (Time.time - lastUpdateTime > 0.5)
         {
-            if (!isFrozen) {
+            float dist = Vector3.Distance(player.position, transform.position);
+            if (!isFrozen && dist > minDistance) {
                 GetComponent<NavMeshAgent>().SetDestination(player.position);
             } else {
                 GetComponent<NavMeshAgent>().ResetPath();

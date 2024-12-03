@@ -18,10 +18,10 @@ public class PickableObject : MonoBehaviour
             if (isInRange)
             {
 
-                if (gameObject.CompareTag("PickUpObject")) 
+                if (gameObject.tag.StartsWith("PickUp") && GameManager.Instance.PickUpObject(gameObject.tag)) 
                 {
                     gameObject.SetActive(false);
-                } else if (gameObject.CompareTag("PlaceObject")) // check from gamemanager if we have this object picked up
+                } else if (gameObject.tag.StartsWith("Place") && GameManager.Instance.PlaceObject(gameObject.tag))
                 {
                     foreach (Transform child in transform)
                     {
@@ -37,7 +37,13 @@ public class PickableObject : MonoBehaviour
         if (other.CompareTag("Player") )
         {
             isInRange = true;
-            collectPrompt.gameObject.SetActive(true);
+            var questName = gameObject.tag.Replace("PickUp", "").Replace("Place", "");
+            if (GameManager.Instance.GetQuestState(questName) == QuestState.Started || 
+                GameManager.Instance.GetQuestState(questName) == QuestState.ObjectPicked) 
+            {
+                collectPrompt.gameObject.SetActive(true);
+            }
+                
         }
     }
 
