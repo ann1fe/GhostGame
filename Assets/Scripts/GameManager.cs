@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections.Generic;
 using System;
 using Unity.Properties;
+using Unity.VisualScripting;
 public enum QuestState{
     NotStarted,
     Started,
@@ -14,20 +15,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance; // ?
 
-    public int mushroomCount = 0;
-
-    public TMP_Text mushroomText;
-
-    public GameObject gameOverUI;
-    public GameObject gameWinUI;
-
-    public GameObject handOverMushroomsUI;
     public GameObject player;
     public GameObject playerCamera;
+    public int followCount;
+    public GameObject instructions;
 
-    Dictionary<string, QuestState> questState = new Dictionary<string, QuestState>();
-
-   
+    Dictionary<string, QuestState> questState = new Dictionary<string, QuestState>(); 
 
     void Awake()
     {
@@ -37,9 +30,16 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
     }
-    public void SetPlayerFrozen(bool frozen)
+    void Start() {
+        Cursor.lockState = CursorLockMode.None;
+    }
+    public void DisableInstructions() {
+        Cursor.lockState = CursorLockMode.Locked;
+        instructions.SetActive(false);
+    }
+    public bool HasMaxFollowers()
     {
-   
+        return followCount == 5;
     }
 
     public QuestState GetQuestState(string questName)
@@ -63,16 +63,17 @@ public class GameManager : MonoBehaviour
             {
                 questState[questName] = QuestState.Started;
             } 
-            else if (GetQuestState(questName) == QuestState.ObjectPlaced) 
+            else if (((questName == "Teddy" || questName == "Food") && GetQuestState(questName) == QuestState.ObjectPicked) || 
+                GetQuestState(questName) == QuestState.ObjectPlaced) 
             {
                 questState[questName] = QuestState.Ended;
-                GameObject obj = GameObject.FindWithTag(dialogueTag);
-                if (obj) 
+                GameObject[] objects = GameObject.FindGameObjectsWithTag(dialogueTag);
+                foreach (var obj in objects)
                 {
                     obj.GetComponent<GhostFollow>().SetFrozen(false);
+                    followCount ++;
                 }
             }
-            
         }
     }
 
@@ -102,6 +103,27 @@ public class GameManager : MonoBehaviour
     {
         if (objectTag == "CandleGhost") {
             if (GetQuestState("Candle") == QuestState.ObjectPlaced) {
+                return 1;
+            }
+        }
+        else if (objectTag == "FlowerGhost") 
+        {
+            if (GetQuestState("Flower") == QuestState.ObjectPlaced)
+            {
+                return 1;
+            }
+        }
+             else if (objectTag == "FoodGhost") 
+        {
+            if (GetQuestState("Food") == QuestState.ObjectPicked)
+            {
+                return 1;
+            }
+        }
+        else if (objectTag == "TeddyGhost") 
+        {
+            if (GetQuestState("Teddy") == QuestState.ObjectPicked)
+            {
                 return 1;
             }
         }

@@ -16,7 +16,6 @@ public class DialogueManager : MonoBehaviour
     private string dialogueTag;
     
     public float typingSpeed = 0.2f;
- 
     private void Awake()
     {
         if (Instance == null)
@@ -27,9 +26,7 @@ public class DialogueManager : MonoBehaviour
  
     public void StartDialogue(Dialogue dialogue, string tag)
     {
-        GameManager.Instance.SetPlayerFrozen(true);
         lines.Clear();
- 
         foreach (DialogueLine dialogueLine in dialogue.dialogueLines)
         {
             lines.Enqueue(dialogueLine);
@@ -72,7 +69,6 @@ public class DialogueManager : MonoBehaviour
     {
         gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
-        GameManager.Instance.SetPlayerFrozen(false);
         GameManager.Instance.NotifyDialogueEnded(dialogueTag);
     }
 }

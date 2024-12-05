@@ -30,18 +30,24 @@ public class DialogueTrigger : MonoBehaviour
     public int dialogueIndex = 0;
     public GameObject dialogueBox;
     public TextMeshProUGUI dialoguePrompt;
+    public GameObject exclamationMark;
     private bool playerInRange = false;
 
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (playerInRange && Input.GetKeyDown(KeyCode.E) )
         {
-            TriggerDialogue();
+            var questName = gameObject.tag.Replace("Ghost", "");
+            if (GameManager.Instance.GetQuestState(questName) != QuestState.Ended)
+            { 
+                TriggerDialogue();
+            }
         }
     }
 
     public void TriggerDialogue()
     {
+        exclamationMark.SetActive(false);
         dialogueBox.SetActive(true);
         int index = GameManager.Instance.GetDialogueIndex(gameObject.tag);
         DialogueManager.Instance.StartDialogue(dialogues[index], gameObject.tag);

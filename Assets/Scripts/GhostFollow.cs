@@ -14,6 +14,7 @@ public class GhostFollow : MonoBehaviour
     private float lastUpdateTime = 0;
     private bool isFrozen = true;
 
+
     public void SetFrozen(bool frozen) {
         isFrozen = frozen;
     }
